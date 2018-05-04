@@ -599,6 +599,9 @@ void Client::handle_datagram(DatagramHandle in_dg, DatagramIterator &dgi)
             return;
         }
 
+        m_client->m_log->info() << "Received object entrance into interest with context "
+                                << request_context << ".\n";
+
         m_pending_objects.emplace(dgi.read_doid(), request_context);
         it->second->queue_expected(in_dg);
         if(it->second->is_ready()) {
@@ -618,6 +621,9 @@ void Client::handle_datagram(DatagramHandle in_dg, DatagramIterator &dgi)
                            << context << ".\n";
             return;
         }
+
+        m_client->m_log->info() << "Received GET_ZONES_COUNT_RESP for context "
+                                << context << ".\n";    
 
         it->second->set_expected(count);
         if(it->second->is_ready()) {
@@ -843,6 +849,7 @@ void InterestOperation::timeout()
 
 void InterestOperation::finish(bool is_timeout)
 {
+    m_client->m_log->info() << "Finished interest operation with context " << m_request_context << ".\n";
     if(!is_timeout && !m_timeout->cancel()) {
         // The timeout is already running; let it clean up instead.
         return;
@@ -887,6 +894,8 @@ void InterestOperation::finish(bool is_timeout)
 
 bool InterestOperation::is_ready()
 {
+    m_client->m_log->info() << "Check for interest operation with context " << m_request_context << "; " <<
+                            << m_pending_generates.size() << "/" << m_total << ".\n";
     return m_has_total && m_pending_generates.size() >= m_total;
 }
 

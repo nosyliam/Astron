@@ -756,7 +756,7 @@ void DistributedObject::handle_datagram(DatagramHandle, DatagramIterator &dgi)
         doid_t queried_parent = dgi.read_doid();
 
 
-        m_log->trace() << "Handling get_zones_objects with parent '" << queried_parent << "'"
+        m_log->info() << "Handling get_zones_objects with parent '" << queried_parent << "'"
                        << ".  My id is " << m_do_id << " and my parent is " << m_parent_id
                        << ".\n";
 
