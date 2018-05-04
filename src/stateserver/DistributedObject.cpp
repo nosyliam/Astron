@@ -593,7 +593,6 @@ void DistributedObject::handle_datagram(DatagramHandle, DatagramIterator &dgi)
             m_log->info() << "Received location acknowledgement for zone " << r_zone_id
                            << " but my zone_id is " << m_zone_id << ".\n";
         } else {
-            m_log->info() << "Parent acknowledged my location change.\n";
             m_parent_synchronized = true;
         }
         break;
