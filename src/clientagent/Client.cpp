@@ -852,6 +852,7 @@ void InterestOperation::finish(bool is_timeout)
     m_client->m_log->info() << "Finished interest operation with context " << m_request_context << ".\n";
     if(!is_timeout && !m_timeout->cancel()) {
         // The timeout is already running; let it clean up instead.
+        m_client->m_log->info() << "Waiting for timeout at context " << m_request_context << ".\n";
         return;
     }
 
