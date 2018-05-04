@@ -552,6 +552,8 @@ void DistributedObject::handle_datagram(DatagramHandle, DatagramIterator &dgi)
         if(new_parent == m_do_id) {
             if(m_do_id == r_do_id) {
                 if(new_zone == r_zone) {
+                    m_log->info() << "No relocation to acknowledge, assuming synchronized";
+                    m_parent_synchronized = true;
                     break; // No change, so do nothing.
                 }
 
