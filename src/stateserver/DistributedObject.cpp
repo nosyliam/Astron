@@ -777,7 +777,7 @@ void DistributedObject::handle_datagram(DatagramHandle, DatagramIterator &dgi)
                     // normal interest entry. If not, we reply with a standard
                     // location entry and allow the interested peer to resolve
                     // the difference itself.
-                    m_log->info() << "m_parent_synchronized is  " << m_parent_synchronized ? "true" : "false" << ".\n";
+                    m_log->info() << "m_parent_synchronized is  " << m_parent_synchronized << ".\n";
                     if(m_parent_synchronized) {
                         send_interest_entry(sender, context);
                     } else {
