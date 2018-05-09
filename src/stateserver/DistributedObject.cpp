@@ -221,12 +221,6 @@ void DistributedObject::handle_location_change(doid_t new_parent, zone_t new_zon
         } else if(!m_ai_explicitly_set) {
             m_ai_channel = 0;
         }
-
-        if (new_zone != old_zone) {
-            m_zone_id = new_zone;
-            targets.insert(m_parent_id);
-            targets.insert(location_as_channel(m_parent_id, old_zone));
-        }
     } else if(new_zone != old_zone) {
         m_zone_id = new_zone;
         // Notify parent of changing zone
@@ -558,7 +552,7 @@ void DistributedObject::handle_datagram(DatagramHandle, DatagramIterator &dgi)
         if(new_parent == m_do_id) {
             if(m_do_id == r_do_id) {
                 if(new_zone == r_zone) {
-                    m_log->info() << "No relocation to acknowledge, assuming synchronized";
+                    m_log->info() << "No relocation to acknowledge, assuming synchronized.\n";
                     m_parent_synchronized = true;
                     break; // No change, so do nothing.
                 }
@@ -577,7 +571,6 @@ void DistributedObject::handle_datagram(DatagramHandle, DatagramIterator &dgi)
             dg->add_zone(new_zone);
             route_datagram(dg);
         } else if(r_do_id == m_do_id) {
-            m_log->info() << "New parent in relocation is different from do";
             auto &children = m_zone_objects[r_zone];
             children.erase(child_id);
             if(children.empty()) {
