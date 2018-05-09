@@ -577,7 +577,7 @@ void DistributedObject::handle_datagram(DatagramHandle, DatagramIterator &dgi)
             dg->add_zone(new_zone);
             route_datagram(dg);
         } else if(r_do_id == m_do_id) {
-            m_log->info() << "New parent in relocation is different from do"
+            m_log->info() << "New parent in relocation is different from do";
             auto &children = m_zone_objects[r_zone];
             children.erase(child_id);
             if(children.empty()) {
