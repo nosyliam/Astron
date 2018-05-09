@@ -221,6 +221,12 @@ void DistributedObject::handle_location_change(doid_t new_parent, zone_t new_zon
         } else if(!m_ai_explicitly_set) {
             m_ai_channel = 0;
         }
+
+        if (new_zone != old_zone) {
+            m_zone_id = new_zone;
+            targets.insert(m_parent_id);
+            targets.insert(location_as_channel(m_parent_id, old_zone));
+        }
     } else if(new_zone != old_zone) {
         m_zone_id = new_zone;
         // Notify parent of changing zone
@@ -231,16 +237,16 @@ void DistributedObject::handle_location_change(doid_t new_parent, zone_t new_zon
         return; // Not actually changing location, no need to handle.
     }
 
+    // At this point, the new parent (which may or may not be the same as the
+    // old parent) is unaware of our existence in this zone.
+    m_parent_synchronized = false;
+
     // Send changing location message
     DatagramPtr dg = Datagram::create(targets, sender, STATESERVER_OBJECT_CHANGING_LOCATION);
     dg->add_doid(m_do_id);
     dg->add_location(new_parent, new_zone);
     dg->add_location(old_parent, old_zone);
     route_datagram(dg);
-
-    // At this point, the new parent (which may or may not be the same as the
-    // old parent) is unaware of our existence in this zone.
-    m_parent_synchronized = false;
 
     // Send enter location message
     if(new_parent) {
@@ -571,6 +577,7 @@ void DistributedObject::handle_datagram(DatagramHandle, DatagramIterator &dgi)
             dg->add_zone(new_zone);
             route_datagram(dg);
         } else if(r_do_id == m_do_id) {
+            m_log->info() << "New parent in relocation is different from do"
             auto &children = m_zone_objects[r_zone];
             children.erase(child_id);
             if(children.empty()) {
